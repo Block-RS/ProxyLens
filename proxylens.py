@@ -9,6 +9,8 @@ from tools.utils import analyze_contract_storage
 from tools.utils import merge_slot_profiles
 from tools.utils import merge_global_slot_usages
 from tools.utils import generate_audit_report
+from tools.utils import detect_upgrade_function
+from tools.utils import extract_impl_slot_from_delegatecall_slot_map
 
 from tools.oracles import check_if_selector_collides
 from tools.oracles import check_storage_conflict
@@ -36,6 +38,9 @@ if not (contract_address.startswith("0x") and len(contract_address) == 42):
     print("[x] Invalid contract address format! Please enter a valid 42-character Ethereum address starting with '0x'.")
     sys.exit(1)
 
+
+proxy_pattern = None
+
 delegatecall_addr = {}
 beacon_addr = None
 beacon_bytecode = None
@@ -43,6 +48,7 @@ selectors_from_logic = None   #only store the selector map for single-logic cont
 impl_addr = None  # store the impl address for single-logic contract
 facet_addrs = None # store the impl address for diamond contract
 logic_slot_layout = None
+impl_slot = None
 
 selectors = set()
 bytecode_proxy_selectors = set()
@@ -81,16 +87,14 @@ if not is_diamond:
         print(f"[x] This contract is not a proxy contract,please offer a proxy contract address from {NETWORK} network")
         sys.exit(0)
     selectors_from_beacon,beacon_addr,beacon_bytecode,is_beacon = extract_beacon_selectors(contract_address, bytecode,{impl_addr},explorer, verbose=False)
-    if is_beacon:
-        print("[√] This contract is a Beacon proxy")
-    else:
-        print("[√] This contract is a Standard proxy")
     delegatecall_addr = {impl_addr}
 else:
-    print("[√] This contract is a Diamond proxy")
     selectors_from_logic = set(diamond_selector_map_raw.keys()) 
     delegatecall_addr = facet_addrs 
 selectors = selectors.union(selectors_from_logic)
+
+# === Check if selector collides ===
+selectors_from_proxy = bytecode_proxy_selectors
 print(f"[+] Number of Selectors in Proxy Contract: {len(selectors_from_proxy)}")
 if not is_diamond:
     print(f"[+] Number of Selectors in Logic Contract: {len(selectors_from_logic)}")
@@ -98,9 +102,6 @@ if not is_diamond:
         print(f"[+] Number of Selectors in Beacon Contract: {len(selectors_from_beacon)}")
 else:
     print(f"[+] Number of Selectors in Diamond Facets: {len(selectors_from_logic)}")
-# === Check if selector collides ===
-selectors_from_proxy = bytecode_proxy_selectors
-
 
 
 # === Try to identify the owner slot ===
@@ -112,10 +113,27 @@ else:
 if owner == None:
     owner = "0x" + "cc" * 20
 
-
 # === Try to identify the delegatecall slot ===
 print("[+] Trying to extract logic addresses")
 delegatecall_slot_map = extract_delegatecall_slot(contract_address, bytecode,owner,is_diamond,selectors, delegatecall_addr,explorer, verbose=True)
+impl_slot = extract_impl_slot_from_delegatecall_slot_map(delegatecall_slot_map,is_diamond)
+logic_bytecode = explorer.eth_getCode(impl_addr)
+if_upgrade_in_logic = detect_upgrade_function(impl_addr, logic_bytecode, owner, owner_slot, owner_mask, delegatecall_slot_map, selectors_from_logic, explorer)
+
+# === Try to identify the proxy pattern === 
+if is_diamond:
+    proxy_pattern = "Diamond Proxy(ERC-2535)"
+elif beacon_addr:
+    proxy_pattern = "Beacon Proxy(ERC-1967)"
+elif impl_slot is None:
+    proxy_pattern = "Minimal Proxy(ERC-1167)"
+elif impl_slot == 24440054405305269366569402256811496959409073762505157381672968839269610695612:
+    proxy_pattern = "Transparent Proxy(ERC-1967)"
+elif impl_slot == 21207930114812315820938114206660047941640428514766061121520239240342018576409 and if_upgrade_in_logic:
+    proxy_pattern = "UUPS Proxy(ERC-1822)"
+else:
+    proxy_pattern = "Customized"
+
 
 # === Prepare sensitive_slots_detail_list ===
 sensitive_slots_detail_list = []
@@ -293,6 +311,7 @@ else:
 
 # === Call report generation ===
 audit_report_text = generate_audit_report(
+    proxy_pattern = proxy_pattern,
     contract_address=contract_address,
     selectors_from_proxy = selectors_from_proxy ,
     selectors_from_logic = selectors_from_logic,

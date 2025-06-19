@@ -13,7 +13,7 @@ from octopus.platforms.ETH.emulator import EthereumSSAEngine
 # === Generate Audit Report ===
 from datetime import datetime
 
-def generate_audit_report(contract_address,
+def generate_audit_report(proxy_pattern,contract_address,
                           selectors_from_proxy ,selectors_from_logic ,
                           selectors_from_beacon,beacon_addr,global_layout,
                           if_selectors_collide, collision_selectors_detail_list,
@@ -41,8 +41,7 @@ def generate_audit_report(contract_address,
     report_lines.append(f"## Report Summary\n- Date: {datetime.now().strftime('%Y-%m-%d')}\n")
 
     # Proxy Type
-    proxy_type_str = "Diamond Proxy" if is_diamond else ("Beacon Proxy" if beacon_addr else "Standard Proxy")
-    report_lines.append(f"## Proxy Type\n- {proxy_type_str}\n")
+    report_lines.append(f"## Proxy Type\n- {proxy_pattern}\n")
 
     # Logic / Beacon / Facets Address
     report_lines.append("## Logic / Facets / Beacon Address")
@@ -999,3 +998,43 @@ def parse_nested_sha3_tag(tag_str, inferred_type=None):
 
     return recursive_parse(tag_str, inferred_type)
 
+
+
+def detect_upgrade_function(contract_address, bytecode, owner, owner_slot, owner_mask, delegatecall_slot_map, selectors, explorer):
+    print(f"[+] Checking if upgrade function exists in contract {contract_address}...")
+    code_size = len(bytecode[2:]) // 2
+    has_upgrade_function = False
+
+    for selector in sorted(selectors):
+        calldata = bytes.fromhex(selector[2:] + "00" * 12 + "ee" * 20)
+        callinfo = {
+            'calldata': calldata,
+            'callvalue': 0,
+            'origin_proxy': contract_address,
+            'address': contract_address,
+            'codesize': code_size,
+            'storage_address': contract_address,
+            'owner_slot': owner_slot,
+            'owner_mask': owner_mask,
+            'delegatecall_slot_map': delegatecall_slot_map,
+            'caller': owner,
+            'origin': owner
+        }
+
+        state = EthereumVMstate(explorer)
+        emul = EthereumSSAEngine(bytecode, explorer)
+        emul.emulate(callinfo.copy(), state, debug=False, if_storage_analysis=False)
+
+        if emul.result.get('write_owner') or emul.result.get("delegate_overwrite"):
+            has_upgrade_function = True
+            break  
+
+    return has_upgrade_function
+
+def extract_impl_slot_from_delegatecall_slot_map(delegatecall_slot_map, is_diamond):
+    if is_diamond:
+        return None
+
+    for _, (_, slot) in delegatecall_slot_map.items():
+        return slot  
+    return None
