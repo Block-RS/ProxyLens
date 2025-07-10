@@ -405,9 +405,9 @@ class EthereumEmulatorEngine(EmulatorEngine):
         # save last opcode to result
         self.result['opcode'] = str(instr.name)
         if self.if_storage_analysis:
-            # print(f"[opcode={instr.name}]")
-            # print(f"state._stack = {list(map(lambda x: x if(type(x)==str) else hex(x),state._stack))}")
-            # print(f"tag_stack = {list(self.tag_stack)}")
+            print(f"[opcode={instr.name}]")
+            print(f"state._stack = {list(map(lambda x: x if(type(x)==str) else hex(x),state._stack))}")
+            print(f"tag_stack = {list(self.tag_stack)}")
             instr_trace = {
                 "pc": state.pc - 1,
                 "op": instr.name,

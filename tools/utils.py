@@ -455,11 +455,14 @@ def analyze_contract_storage( address, selectors, explorer, caller=None):
     selectors = selectors.union({fallback_selector})
     test_selectors = set()
 
-    test_selectors = {"0x02fc24a9"}  # selector of mapping(bytes4 => FacetAddressAndPosition) struct {address facetAddress;uint96 functionSelectorPosition;}
-    test_selectors = {"0x02fc24a9"}  # selector of mapping(address => FacetFunctionSelectors) struct {bytes4[] functionSelectors;uint256 facetAddressPosition;}
+    # test_selectors = {"0x8129fc1c"}  #selector of initialize()
+
+    # test_selectors = {"0x02fc24a9"}  # selector of mapping(bytes4 => FacetAddressAndPosition) struct {address facetAddress;uint96 functionSelectorPosition;}
+    # test_selectors = {"0x02fc24a9"}  # selector of mapping(address => FacetFunctionSelectors) struct {bytes4[] functionSelectors;uint256 facetAddressPosition;}
+
     # test_selectors = {"0xc3734b7b"}  # selector1 of uint256[][]
     # test_selectors = test_selectors.union({"0x54058a4b"})  # selector2 of uint256[][]
-    # test_selectors = {"0xf36b716a"}  # selector of mapping(address => mapping(bytes32 => RoleData)) struct RoleData {mapping(address => bool) members;bytes32 adminRole;}
+    test_selectors = {"0xf36b716a"}  # selector of mapping(address => mapping(bytes32 => RoleData)) struct RoleData {mapping(address => bool) members;bytes32 adminRole;}
 
 
     for selector in sorted(selectors):

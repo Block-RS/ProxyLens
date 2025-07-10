@@ -1,38 +1,22 @@
 # Proxy Contract Audit Report
 ## Contract Address
-- 0xede059573fd41d9b39fadc0e9a6f83e228ba1b4e
+- 0xa174a9b694d3271b6192f08d00ba65dad8cc3ecd
 
 ## Report Summary
-- Date: 2025-06-19
+- Date: 2025-06-28
 
 ## Proxy Type
-- Customized
+- Minimal Proxy(ERC-1167)
 
 ## Logic / Facets / Beacon Address
-- Logic Contract Address: 0x125f839bb972a1fc6c352e0eecfac4d99a8e8c98
+- Logic Contract Address: 0xe2ad2d0469165a386cb734b6921cb2e360f36518
 
 ## Selectors Overview
 - Number of Selectors in Proxy Contract: 0
-- Number of Selectors in Logic Contract: 69
+- Number of Selectors in Logic Contract: 57
 
 ## Storage Layout Overview (Proxy Slot Layout)
 > Note: Slots used by mappings or dynamic arrays may not appear explicitly in this layout, as their storage is computed dynamically via keccak(slot . key). Only the base slot of such variables will appear here. Also, some variable's type may remain unkonwn due to insufficient context
-    - Slot 89532207833283453166981358064394884954800891875771469636219037672473505217783 Mask 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff → Type: address
-    - Slot 1 Mask 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff → Type: uint256
-    - Slot 2 Mask 0x00000000000000000000000000000000000000000000000000000000000000ff → Type: uint8
-    - Slot 0 Mask 0x0000000000000000000000ff0000000000000000000000000000000000000000 → Type: bool
-    - Slot 0 Mask 0x000000000000000000000000ffffffffffffffffffffffffffffffffffffffff → Type: address
-    - Slot 5 Mask 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff → Type: unknown
-    - Slot 9 Mask 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff → Type: unknown
-    - Slot 11 Mask 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff → Type: uint256
-    - Slot 4 Mask 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff → Type: unknown
-    - Slot 3 Mask 0x00000000000000000000000000000000000000000000000000000000000000ff → Type: uint8
-    - Slot 8 Mask 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff → Type: unknown
-    - Slot 7 Mask 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff → Type: unknown
-    - Slot 12 Mask 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff → Type: mapping(unknown => unknown)
-    - Slot 10 Mask 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff → Type: mapping(unknown => mapping(unknown => unknown))
-    - Slot 13 Mask 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff → Type: mapping(unknown => unknown)
-    - Slot 14 Mask 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff → Type: mapping(unknown => unknown)
 
 ---
 
@@ -42,7 +26,7 @@
 | Function Selector Collisions    | Not Found | Low |
 | Storage Conflicts               | Not Found | Low |
 | Initialization Missing          | Not Found | Low |
-| Permission Control Missing      | Not Found | Low |
+| Permission Control Missing      | Found | High |
 
 ---
 
@@ -64,83 +48,70 @@
 
 ## 4. Permission Control Analysis
 - Sensitive Storage Slots:
-    - owner → Slot 0 Mask 0x000000000000000000000000ffffffffffffffffffffffffffffffffffffffff
-    - logic_address → Slot 89532207833283453166981358064394884954800891875771469636219037672473505217783 Mask 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    - owner → Slot 3 Mask 0x000000000000000000000000ffffffffffffffffffffffffffffffffffffffff
 - Detected Permission Check Locations:
-    - Selector 0x0290cbc8 → missing → no admin check, no privileged operation detected
-    - Selector 0x0305da4f → missing → no admin check, no privileged operation detected
-    - Selector 0x039ab887 → missing → no admin check, no privileged operation detected
-    - Selector 0x054ab01a → missing → no admin check, no privileged operation detected
-    - Selector 0x06fdde03 → missing → no admin check, no privileged operation detected
-    - Selector 0x095ea7b3 → missing → no admin check, no privileged operation detected
-    - Selector 0x10f3a6d8 → missing → no admin check, no privileged operation detected
-    - Selector 0x13e23e41 → missing → no admin check, no privileged operation detected
-    - Selector 0x158ef93e → missing → no admin check, no privileged operation detected
-    - Selector 0x17a1a861 → missing → no admin check, no privileged operation detected
-    - Selector 0x18160ddd → missing → no admin check, no privileged operation detected
-    - Selector 0x182df0f5 → missing → no admin check, no privileged operation detected
-    - Selector 0x1cda95d5 → missing → no admin check, no privileged operation detected
-    - Selector 0x226e835c → missing → no admin check, no privileged operation detected
-    - Selector 0x23b872dd → missing → no admin check, no privileged operation detected
-    - Selector 0x28cdfaeb → missing → no admin check, no privileged operation detected
-    - Selector 0x2f2ba814 → missing → no admin check, no privileged operation detected
-    - Selector 0x2f4350c2 → missing → no admin check, no privileged operation detected
-    - Selector 0x313ce567 → missing → no admin check, no privileged operation detected
-    - Selector 0x33a581d2 → missing → no admin check, no privileged operation detected
-    - Selector 0x388c0b8c → missing → no admin check, no privileged operation detected
-    - Selector 0x3e20a929 → missing → no admin check, no privileged operation detected
-    - Selector 0x46951954 → passed → admin check passed; no privileged operation detected
-    - Selector 0x4929fbf7 → missing → no admin check, no privileged operation detected
-    - Selector 0x496cc164 → missing → no admin check, no privileged operation detected
-    - Selector 0x4d12d4b6 → missing → no admin check, no privileged operation detected
-    - Selector 0x4fd7c0dd → missing → no admin check, no privileged operation detected
-    - Selector 0x52d1902d → missing → no admin check, no privileged operation detected
-    - Selector 0x556043ef → missing → no admin check, no privileged operation detected
-    - Selector 0x5cde5055 → missing → no admin check, no privileged operation detected
-    - Selector 0x5e5c06e2 → missing → no admin check, no privileged operation detected
-    - Selector 0x63152a50 → missing → no admin check, no privileged operation detected
-    - Selector 0x6b4169c3 → missing → no admin check, no privileged operation detected
-    - Selector 0x6eb1769f → missing → no admin check, no privileged operation detected
-    - Selector 0x6f307dc3 → missing → no admin check, no privileged operation detected
-    - Selector 0x70a08231 → missing → no admin check, no privileged operation detected
-    - Selector 0x715018a6 → passed → admin check passed; owner changed by 0x125f839bb972a1fc6c352e0eecfac4d99a8e8c98
-    - Selector 0x71ee46eb → missing → no admin check, no privileged operation detected
-    - Selector 0x77ede051 → missing → no admin check, no privileged operation detected
-    - Selector 0x81c8d895 → missing → no admin check, no privileged operation detected
-    - Selector 0x84d4b410 → missing → no admin check, no privileged operation detected
-    - Selector 0x852a12e3 → missing → no admin check, no privileged operation detected
-    - Selector 0x8da5cb5b → missing → no admin check, no privileged operation detected
-    - Selector 0x8f32d59b → passed → admin check passed; no privileged operation detected
-    - Selector 0x95d89b41 → missing → no admin check, no privileged operation detected
-    - Selector 0x9c52da7a → missing → no admin check, no privileged operation detected
-    - Selector 0xa0712d68 → missing → no admin check, no privileged operation detected
-    - Selector 0xa3a7e7f3 → missing → no admin check, no privileged operation detected
-    - Selector 0xa6afed95 → missing → no admin check, no privileged operation detected
+    - Selector 0x01306373 → missing → no admin check, no privileged operation detected
+    - Selector 0x015af8ee → missing → no admin check, no privileged operation detected
+    - Selector 0x079a71ba → missing → no admin check, no privileged operation detected
+    - Selector 0x0a85bd01 → missing → no admin check, no privileged operation detected
+    - Selector 0x0d45e6f6 → rejected → Privileged function detected, but rejected.
+    - Selector 0x0e25569e → missing → no admin check, no privileged operation detected
+    - Selector 0x150b7a02 → missing → no admin check, no privileged operation detected
+    - Selector 0x21421707 → missing → no admin check, no privileged operation detected
+    - Selector 0x22dca8bb → missing → no admin check, no privileged operation detected
+    - Selector 0x2b7de7dd → missing → no admin check, no privileged operation detected
+    - Selector 0x3187e5a0 → missing → no admin check, no privileged operation detected
+    - Selector 0x321d2f92 → missing → no admin check, no privileged operation detected
+    - Selector 0x35128b65 → missing → no admin check, no privileged operation detected
+    - Selector 0x3543b2c0 → missing → no admin check, no privileged operation detected
+    - Selector 0x35981fd8 → missing → no admin check, no privileged operation detected
+    - Selector 0x3941aab1 → missing → no admin check, no privileged operation detected
+    - Selector 0x42e94c90 → missing → no admin check, no privileged operation detected
+    - Selector 0x45a92c96 → passed → admin check passed; owner changed by 0xe2ad2d0469165a386cb734b6921cb2e360f36518
+    - Selector 0x4e487b71 → missing → no admin check, no privileged operation detected
+    - Selector 0x57091c3f → passed → admin check passed; no privileged operation detected
+    - Selector 0x5d222d0f → missing → no admin check, no privileged operation detected
+    - Selector 0x5d2dfce5 → missing → no admin check, no privileged operation detected
+    - Selector 0x61790a81 → missing → no admin check, no privileged operation detected
+    - Selector 0x61a52a36 → missing → no admin check, no privileged operation detected
+    - Selector 0x626fce23 → missing → no admin check, no privileged operation detected
+    - Selector 0x639d7e86 → missing → no admin check, no privileged operation detected
+    - Selector 0x63df72ea → missing → no admin check, no privileged operation detected
+    - Selector 0x7ac159af → missing → no admin check, no privileged operation detected
+    - Selector 0x7c282ef9 → missing → no admin check, no privileged operation detected
+    - Selector 0x8127d479 → missing → no admin check, no privileged operation detected
+    - Selector 0x877c86fb → missing → no admin check, no privileged operation detected
+    - Selector 0x8823151b → missing → no admin check, no privileged operation detected
+    - Selector 0x88786272 → missing → no admin check, no privileged operation detected
+    - Selector 0x8a4cfd34 → missing → no admin check, no privileged operation detected
+    - Selector 0x8d791478 → missing → no admin check, no privileged operation detected
+    - Selector 0x995330a7 → missing → no admin check, no privileged operation detected
+    - Selector 0xa4c015cc → passed → admin check passed; no privileged operation detected
     - Selector 0xa9059cbb → missing → no admin check, no privileged operation detected
-    - Selector 0xb2bdfa7b → missing → no admin check, no privileged operation detected
-    - Selector 0xb5dbfc1a → missing → no admin check, no privileged operation detected
-    - Selector 0xbf5bfdfb → missing → no admin check, no privileged operation detected
-    - Selector 0xc034d0db → missing → no admin check, no privileged operation detected
-    - Selector 0xc17693c0 → missing → no admin check, no privileged operation detected
-    - Selector 0xc1a2007d → missing → no admin check, no privileged operation detected
-    - Selector 0xc200659e → missing → no admin check, no privileged operation detected
-    - Selector 0xc4a11628 → missing → no admin check, no privileged operation detected
-    - Selector 0xd007c644 → missing → no admin check, no privileged operation detected
-    - Selector 0xd271be3f → missing → no admin check, no privileged operation detected
-    - Selector 0xd3ac25c4 → passed → admin check passed; no privileged operation detected
-    - Selector 0xd8884795 → missing → no admin check, no privileged operation detected
-    - Selector 0xdb006a75 → missing → no admin check, no privileged operation detected
-    - Selector 0xdd62ed3e → missing → no admin check, no privileged operation detected
-    - Selector 0xe192782b → missing → no admin check, no privileged operation detected
-    - Selector 0xf04bf8b3 → missing → no admin check, no privileged operation detected
-    - Selector 0xf2fde38b → passed → admin check passed; owner changed by 0x125f839bb972a1fc6c352e0eecfac4d99a8e8c98
-    - Selector 0xfc0c546a → missing → no admin check, no privileged operation detected
-    - Selector 0xfdbbf8ac → missing → no admin check, no privileged operation detected
+    - Selector 0xaa6ca808 → missing → no admin check, no privileged operation detected
+    - Selector 0xac7c420e → missing → no admin check, no privileged operation detected
+    - Selector 0xb321a7a9 → missing → owner write detected in logic 0xe2ad2d0469165a386cb734b6921cb2e360f36518
+    - Selector 0xbe72f3f8 → missing → no admin check, no privileged operation detected
+    - Selector 0xc3124525 → missing → no admin check, no privileged operation detected
+    - Selector 0xc3a78bdb → missing → no admin check, no privileged operation detected
+    - Selector 0xc4f45423 → missing → no admin check, no privileged operation detected
+    - Selector 0xc57981b5 → missing → no admin check, no privileged operation detected
+    - Selector 0xc7d89478 → passed → admin check passed; no privileged operation detected
+    - Selector 0xd2845977 → missing → no admin check, no privileged operation detected
+    - Selector 0xd32521a0 → rejected → Privileged function detected, but rejected.
+    - Selector 0xd8270dce → missing → no admin check, no privileged operation detected
+    - Selector 0xda25de3c → missing → no admin check, no privileged operation detected
+    - Selector 0xe21db255 → missing → no admin check, no privileged operation detected
+    - Selector 0xe29eb836 → missing → no admin check, no privileged operation detected
+    - Selector 0xed196eee → missing → no admin check, no privileged operation detected
+    - Selector 0xef58f9e7 → missing → no admin check, no privileged operation detected
+    - Selector 0xf5aa2edd → missing → no admin check, no privileged operation detected
+    - Selector 0xf8dd0126 → missing → no admin check, no privileged operation detected
 
 ---
 
 ## 5. Final Assessment
-**Overall Security Posture**: Good
-**Recommendation**: Safe to deploy
+**Overall Security Posture**: Needs Improvement
+**Recommendation**: Needs fixes
 
 ---

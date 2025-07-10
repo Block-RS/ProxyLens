@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from tools.utils import extract_selectors_from_bytecode
 from tools.utils import analyze_contract_storage
 import json

@@ -122,15 +122,15 @@ if_upgrade_in_logic = detect_upgrade_function(impl_addr, logic_bytecode, owner, 
 
 # === Try to identify the proxy pattern === 
 if is_diamond:
-    proxy_pattern = "Diamond Proxy(ERC-2535)"
+    proxy_pattern = "Diamond Proxy(EIP-2535)"
 elif beacon_addr:
-    proxy_pattern = "Beacon Proxy(ERC-1967)"
+    proxy_pattern = "Beacon Proxy(EIP-1967)"
 elif impl_slot is None:
-    proxy_pattern = "Minimal Proxy(ERC-1167)"
+    proxy_pattern = "Minimal Proxy(EIP-1167)"
 elif impl_slot == 24440054405305269366569402256811496959409073762505157381672968839269610695612:
-    proxy_pattern = "Transparent Proxy(ERC-1967)"
+    proxy_pattern = "Transparent Proxy(EIP-1967)"
 elif impl_slot == 21207930114812315820938114206660047941640428514766061121520239240342018576409 and if_upgrade_in_logic:
-    proxy_pattern = "UUPS Proxy(ERC-1822)"
+    proxy_pattern = "UUPS Proxy(EIP-1822)"
 else:
     proxy_pattern = "Customized"
 
