@@ -49,4 +49,4 @@ ProxyLens/
 
 ## 📝 Contact
 If you have any questions or suggestions, please feel free to contact:
-📧 honghaojia@cug.edu.com
+📧 haojiahong@cug.edu.com
